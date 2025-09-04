@@ -20,7 +20,25 @@ class Doctor:
         self.patients_queue = Queue()
 
     def add_patient(self, patient):
-        pass
+        queue_lst = []
+        while not self.patients_queue.is_empty():
+            queue_lst.append(self.patients_queue.dequeue())
+        flag = False
+        for i in range(len(queue_lst)):
+            if patient.severity > queue_lst[i].severity:
+                queue_lst.insert(i, patient)
+                flag = True
+                break
+        if not flag:
+            queue_lst.append(patient)
+        for patient in queue_lst:
+            self.patients_queue.enqueue(patient)
+
+    def treat_patient(self):
+        if self.patients_queue.is_empty():
+            return None
+        return self.patients_queue.dequeue()
+
 
     def __repr__(self):
         return f"Doc ID: {self.d_id}, Doc name: {self.name}, Pat queue: {self.patients_queue}"
@@ -31,5 +49,84 @@ class Hospital:
         self.doc_list = []
         self.pat_list = []
 
+    def add_doctor(self, doc):
+        if doc not in self.doc_list:
+            self.doc_list.append(doc)
+
+    def add_patient(self, patient):
+        if patient not in self.pat_list:
+            self.pat_list.append(patient)
+
+    def assign_patient_to_doctor(self, p_id, d_id):
+        for patient in self.pat_list:
+            if patient.p_id == p_id:
+                for doctor in self.doc_list:
+                    if doctor.d_id == d_id:
+                        doctor.patients_queue.enqueue(patient)
+
+    def treat_next_patient(self, d_id):
+        for doctor in self.doc_list:
+            if doctor.d_id == d_id:
+                return doctor.patients_queue.dequeue()
+        return None
+
+    def patient_statistics(self):
+        dct = {}
+        for patient in self.pat_list:
+            if patient.severity not in dct:
+                dct[patient.severity] = []
+            dct[patient.severity].append(patient.name)
+        return dct
+
+    def patient_by_priority(self, priority):
+        dct = self.patient_statistics()
+        if priority not in dct:
+            return []
+        return dct[priority]
+
+    def all_doctors(self):
+        pass
+
+
+
     def __repr__(self):
         return f"Hospital name: {self.name}, Doc list: {self.doc_list}, Pat list: {self.pat_list}"
+
+pat1 = Patient(1, 'Ariel', 'Flu', 2)
+pat2 = Patient(2, 'Moshe', 'Broken Leg', 4)
+pat3 = Patient(3, 'Ron', 'Gunshot', 5)
+doc1 = Doctor(789, 'John')
+doc2 = Doctor(543, 'Larry')
+hospital = Hospital('Soroka')
+doc1.add_patient(pat1)
+doc1.add_patient(pat2)
+doc1.add_patient(pat3)
+doc1.treat_patient()
+hospital.add_doctor(doc1)
+hospital.add_doctor(doc2)
+hospital.add_patient(pat1)
+hospital.add_patient(pat2)
+hospital.add_patient(pat3)
+hospital.assign_patient_to_doctor(2, 543)
+hospital.assign_patient_to_doctor(1, 543)
+hospital.patient_statistics()
+print(hospital.pat_list)
+print(hospital.patient_by_priority(4))
+
+
+queue = doc2.patients_queue
+while not queue.is_empty():
+    print(queue.dequeue())
+
+
+
+
+
+
+
+
+
+
+
+
+
