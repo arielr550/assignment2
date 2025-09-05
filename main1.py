@@ -85,9 +85,16 @@ class Hospital:
         return dct[priority]
 
     def all_doctors(self):
-        pass
+        sorted_docs = self.quick_sort(self.doc_list)
+        return [doc.name for doc in sorted_docs]
 
-
+    def quick_sort(self, lst):
+        if len(lst) <= 1:
+            return lst
+        pivot = lst[0]
+        small = [doc for doc in lst[1:] if doc.patients_queue.size() <= pivot.patients_queue.size()]
+        greater = [doc for doc in lst[1:] if doc.patients_queue.size() > pivot.patients_queue.size()]
+        return self.quick_sort(greater) + [pivot] + self.quick_sort(small)
 
     def __repr__(self):
         return f"Hospital name: {self.name}, Doc list: {self.doc_list}, Pat list: {self.pat_list}"
@@ -95,24 +102,31 @@ class Hospital:
 pat1 = Patient(1, 'Ariel', 'Flu', 2)
 pat2 = Patient(2, 'Moshe', 'Broken Leg', 4)
 pat3 = Patient(3, 'Ron', 'Gunshot', 5)
+pat4 = Patient(4, 'Dudu', 'Headache', 1)
+pat5 = Patient(5, 'Sarah', 'Stomach Ache', 3)
 doc1 = Doctor(789, 'John')
 doc2 = Doctor(543, 'Larry')
 hospital = Hospital('Soroka')
-doc1.add_patient(pat1)
-doc1.add_patient(pat2)
-doc1.add_patient(pat3)
+# doc1.add_patient(pat1)
+# doc1.add_patient(pat2)
+# doc1.add_patient(pat3)
 doc1.treat_patient()
 hospital.add_doctor(doc1)
 hospital.add_doctor(doc2)
 hospital.add_patient(pat1)
 hospital.add_patient(pat2)
 hospital.add_patient(pat3)
+hospital.add_patient(pat4)
+hospital.add_patient(pat5)
 hospital.assign_patient_to_doctor(2, 543)
-hospital.assign_patient_to_doctor(1, 543)
+hospital.assign_patient_to_doctor(1, 789)
+hospital.assign_patient_to_doctor(3, 543)
+hospital.assign_patient_to_doctor(4, 543)
+hospital.assign_patient_to_doctor(5, 789)
 hospital.patient_statistics()
 print(hospital.pat_list)
 print(hospital.patient_by_priority(4))
-
+print(hospital.all_doctors())
 
 queue = doc2.patients_queue
 while not queue.is_empty():
