@@ -1,4 +1,26 @@
-from stack_queue import Queue
+class Queue:
+    def __init__(self):
+        self.items = []
+
+    def enqueue(self, obj):
+        self.items.append(obj)
+
+    def dequeue(self):
+        if not self.is_empty():
+            return self.items.pop(0)
+        return None
+
+    def is_empty(self):
+        return len(self.items) == 0
+
+    def peek(self):
+        if not self.is_empty():
+            return self.items[0]
+        return None
+
+    def size(self):
+        return len(self.items)
+
 
 class Patient:
     def __init__(self, p_id: int, name: str, disease_desc: str, severity: int):
