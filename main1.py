@@ -23,17 +23,17 @@ class Queue:
 
 
 class Patient:
-    def __init__(self, p_id: int, name: str, disease_desc: str, severity: int):
+    def __init__(self, p_id: int, name: str, disease_desc: str, priority: int):
         self.p_id = p_id
         self.name = name
         self.d_desc = disease_desc
-        self.severity = severity
+        self.priority = priority
 
     def update_priority(self, new_prio):
-        self.severity = new_prio
+        self.priority = new_prio
 
     def __repr__(self):
-        return f"Pat ID: {self.p_id}, Pat name: {self.name}, Disease desc: {self.d_desc}, Severity: {self.severity}"
+        return f"Pat ID: {self.p_id}, Pat name: {self.name}, Disease desc: {self.d_desc}, Severity: {self.priority}"
 
 class Doctor:
     def __init__(self, d_id: int, name: str):
@@ -47,7 +47,7 @@ class Doctor:
             queue_lst.append(self.patients_queue.dequeue())
         flag = False
         for i in range(len(queue_lst)):
-            if patient.severity > queue_lst[i].severity:
+            if patient.priority > queue_lst[i].priority:
                 queue_lst.insert(i, patient)
                 flag = True
                 break
@@ -95,9 +95,9 @@ class Hospital:
     def patient_statistics(self):
         dct = {}
         for patient in self.pat_list:
-            if patient.severity not in dct:
-                dct[patient.severity] = []
-            dct[patient.severity].append(patient.name)
+            if patient.priority not in dct:
+                dct[patient.priority] = []
+            dct[patient.priority].append(patient.name)
         return dct
 
     def patient_by_priority(self, priority):
@@ -147,7 +147,7 @@ hospital.assign_patient_to_doctor(4, 543)
 hospital.assign_patient_to_doctor(5, 789)
 hospital.patient_statistics()
 print(hospital.pat_list)
-print(hospital.patient_by_priority(4))
+print(hospital.patient_by_priority(3))
 print(hospital.all_doctors())
 
 queue = doc2.patients_queue
